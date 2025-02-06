@@ -10,10 +10,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-export const LoginForm = ({
+export function LoginForm({
   className,
   ...props
-}: React.ComponentPropsWithoutRef<"div">) => {
+}: React.ComponentPropsWithoutRef<"div">) {
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
@@ -65,4 +65,4 @@ export const LoginForm = ({
       </Card>
     </div>
   );
-};
+}
