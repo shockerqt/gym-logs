@@ -23,7 +23,7 @@ export function WorkoutDay() {
             return (
               <Card key={exercise.id}>
                 <CardHeader>
-                  <CardTitle className="flex gap-2">
+                  <CardTitle className="flex gap-2 items-center">
                     {exercise.name}
                     <div className="flex gap-1">
                       {exercise.muscleGroups.map((muscleGroup) => (
