@@ -1,52 +1,25 @@
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Minus, Plus } from "lucide-react";
-import { chestAndTricepsWorkout, MuscleGroup, WorkoutSet } from "../utils/data";
 import { SimpleTooltip } from "@/components/simple-tooltip";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
+import { Minus, Plus } from "lucide-react";
+import {
+  chestAndTricepsWorkout,
+  ExerciseSet,
+  MuscleGroup,
+} from "../utils/data";
+import { ExerciseListItemView } from "./exercise-item-view";
 
 export function WorkoutDay() {
   return (
     <div className="">
+      <h1>Lunes</h1>
       <ScrollArea className="h-[80svh]">
         <div className="flex flex-col gap-2">
           {chestAndTricepsWorkout.exercises.map((exercise) => {
             return (
-              <Card key={exercise.id}>
-                <CardHeader>
-                  <CardTitle className="flex gap-2 items-center">
-                    {exercise.name}
-                    <div className="flex gap-1">
-                      {exercise.muscleGroups.map((muscleGroup) => (
-                        <MuscleGroupIndicator
-                          key={muscleGroup.id}
-                          muscleGroup={muscleGroup}
-                        />
-                      ))}
-                    </div>
-                  </CardTitle>
-                  <CardDescription className="flex gap-2"></CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {exercise.sets.map((set, index, { length }) => {
-                    return (
-                      <>
-                        <SetControl key={set.id} set={set} />
-                        {index < length - 1 && <Separator className="my-2" />}
-                      </>
-                    );
-                  })}
-                </CardContent>
-              </Card>
+              <ExerciseListItemView key={exercise.id} exercise={exercise} />
             );
           })}
         </div>
@@ -85,16 +58,16 @@ function MuscleGroupIndicator({ muscleGroup }: MuscleGroupIndicatorProps) {
 }
 
 interface SetControlProps {
-  set: WorkoutSet;
+  workoutSet: ExerciseSet;
 }
 
-function SetControl({ set }: SetControlProps) {
+function SetControl({ workoutSet }: SetControlProps) {
   return (
     <div className="flex items-center">
       <Button onClick={() => {}} variant="outline" size="icon">
         <Minus />
       </Button>
-      <p className="flex-1 text-center">{set.reps}</p>
+      <p className="flex-1 text-center">{workoutSet.reps}</p>
       <Button variant="outline" size="icon">
         <Plus />
       </Button>
