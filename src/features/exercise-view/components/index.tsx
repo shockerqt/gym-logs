@@ -3,10 +3,7 @@ import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { TypographyH1 } from "@/components/ui/typography";
-import {
-  chestAndTricepsWorkout,
-  ExerciseSet,
-} from "@/features/workout-day/utils/data";
+import { chestAndTricepsWorkout } from "@/features/workout-day/utils/data";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, MessageSquareText, Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -126,24 +123,6 @@ function ExerciseControls({ selectedExerciseId }: ExerciseControls) {
           </>
         )}
       </div>
-    </div>
-  );
-}
-
-interface SetControlProps {
-  set: ExerciseSet;
-}
-
-function SetControl({ set }: SetControlProps) {
-  return (
-    <div className="flex items-center">
-      <Button onClick={() => {}} variant="outline" size="icon">
-        <Minus />
-      </Button>
-      <p className="flex-1 text-center">{set.reps}</p>
-      <Button variant="outline" size="icon">
-        <Plus />
-      </Button>
     </div>
   );
 }
