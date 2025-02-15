@@ -12,6 +12,7 @@ import { cva } from "class-variance-authority";
 import { Exercise, ExerciseSet, MuscleGroup } from "../utils/data";
 import { MessageSquareText } from "lucide-react";
 import { Link } from "react-router";
+import { Fragment } from "react";
 
 interface Props {
   exercise: Exercise;
@@ -38,10 +39,10 @@ export function ExerciseListItemView({ exercise }: Props) {
         <CardContent>
           {exercise.sets.map((set, index, { length }) => {
             return (
-              <>
-                <ExerciseSetView key={set.id} exerciseSet={set} index={index} />
+              <Fragment key={set.id}>
+                <ExerciseSetView exerciseSet={set} index={index} />
                 {index < length - 1 && <Separator className="my-2" />}
-              </>
+              </Fragment>
             );
           })}
         </CardContent>

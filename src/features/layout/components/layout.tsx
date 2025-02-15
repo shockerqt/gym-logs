@@ -14,7 +14,7 @@ import { type PropsWithChildren } from "react";
 
 export function Layout({ children }: PropsWithChildren) {
   return (
-    <div className="flex flex-col h-dvh p-2 gap-2">
+    <div className="flex flex-col h-dvh p-2 gap-2 max-w-xl mx-auto">
       <header className="flex justify-between max-h-[64px] px-1">
         <div className="flex gap-2 items-center">
           <TypographyH1>Gym Logs</TypographyH1>
