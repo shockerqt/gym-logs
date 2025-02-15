@@ -1,11 +1,5 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { TypographyH1 } from "@/components/ui/typography";
@@ -13,6 +7,7 @@ import {
   chestAndTricepsWorkout,
   ExerciseSet,
 } from "@/features/workout-day/utils/data";
+import { cn } from "@/lib/utils";
 import { ArrowLeft, MessageSquareText, Minus, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
@@ -23,6 +18,12 @@ export function ExerciseView() {
     null,
   );
   const exercise = chestAndTricepsWorkout.exercises[0];
+
+  const onSetButtonClick = (exerciseId: number) => () => {
+    setSelectedExerciseId((previousValue) =>
+      exerciseId === previousValue ? null : exerciseId,
+    );
+  };
 
   return (
     <div>
@@ -35,18 +36,23 @@ export function ExerciseView() {
       </div>
       <ExerciseControls selectedExerciseId={selectedExerciseId} />
       <ScrollArea className="h-[80svh]">
-        <Card key={exercise.id} className="p-6">
+        <Card key={exercise.id} className="py-4 px-3">
           {exercise.sets.map((set, index, { length }) => {
+            const selected = selectedExerciseId === set.id;
             return (
               <>
-                <button className="w-full">
-                  <div className="flex items-center">
-                    <p>{index + 1}.</p>
-                    <p className="flex-1 text-center">{set.reps}</p>
-                    <MessageSquareText />
-                  </div>
+                <button
+                  onClick={onSetButtonClick(set.id)}
+                  className={cn(
+                    "w-full flex p-2 ",
+                    selected ? "bg-accent" : "",
+                  )}
+                >
+                  <p>{index + 1}.</p>
+                  <p className="flex-1 text-center">{set.reps}</p>
+                  <MessageSquareText />
                 </button>
-                {index < length - 1 && <Separator className="my-2" />}
+                {index < length - 1 && <Separator className="my-1" />}
               </>
             );
           })}

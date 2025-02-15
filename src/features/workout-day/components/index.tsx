@@ -10,12 +10,13 @@ import {
   MuscleGroup,
 } from "../utils/data";
 import { ExerciseListItemView } from "./exercise-item-view";
+import { TypographyH2 } from "@/components/ui/typography";
 
 export function WorkoutDay() {
   return (
-    <div className="">
-      <h1>Lunes</h1>
-      <ScrollArea className="h-[80svh]">
+    <>
+      <TypographyH2>Lunes</TypographyH2>
+      <ScrollArea className="flex-1 overflow-hidden">
         <div className="flex flex-col gap-2">
           {chestAndTricepsWorkout.exercises.map((exercise) => {
             return (
@@ -24,7 +25,7 @@ export function WorkoutDay() {
           })}
         </div>
       </ScrollArea>
-    </div>
+    </>
   );
 }
 
