@@ -1,9 +1,9 @@
 // Definición de tipos
-type Exercise = {
+export type Exercise = {
   id: number;
   name: string;
   muscleGroups: MuscleGroup[];
-  sets: WorkoutSet[];
+  sets: ExerciseSet[];
 };
 
 export type MuscleGroup = {
@@ -12,7 +12,7 @@ export type MuscleGroup = {
   color: "indigo" | "red" | "yellow";
 };
 
-export type WorkoutSet = {
+export type ExerciseSet = {
   id: number;
   reps: number;
   weight: number; // en kg o lbs

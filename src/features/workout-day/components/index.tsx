@@ -1,103 +1,73 @@
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
-import { Minus, Plus } from "lucide-react";
-import { chestAndTricepsWorkout, MuscleGroup, WorkoutSet } from "../utils/data";
-import { SimpleTooltip } from "@/components/simple-tooltip";
+import { TypographyH2 } from "@/components/ui/typography";
+import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+import { chestAndTricepsWorkout } from "../utils/data";
+import { ExerciseListItemView } from "./exercise-item-view";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 
-export function WorkoutDay() {
-  return (
-    <div className="">
-      <ScrollArea className="h-[80svh]">
-        <div className="flex flex-col gap-2">
-          {chestAndTricepsWorkout.exercises.map((exercise) => {
-            return (
-              <Card key={exercise.id}>
-                <CardHeader>
-                  <CardTitle className="flex gap-2 items-center">
-                    {exercise.name}
-                    <div className="flex gap-1">
-                      {exercise.muscleGroups.map((muscleGroup) => (
-                        <MuscleGroupIndicator
-                          key={muscleGroup.id}
-                          muscleGroup={muscleGroup}
-                        />
-                      ))}
-                    </div>
-                  </CardTitle>
-                  <CardDescription className="flex gap-2"></CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {exercise.sets.map((set, index, { length }) => {
-                    return (
-                      <>
-                        <SetControl key={set.id} set={set} />
-                        {index < length - 1 && <Separator className="my-2" />}
-                      </>
-                    );
-                  })}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </ScrollArea>
-    </div>
-  );
-}
-
-interface MuscleGroupIndicatorProps {
-  muscleGroup: MuscleGroup;
-}
-
-function MuscleGroupIndicator({ muscleGroup }: MuscleGroupIndicatorProps) {
-  const muscleIndicatorVariants = cva("h-4 w-4 bg-amber-50 rounded-full", {
+const buttonClasses = cva(
+  "size-12 rounded-full bg-gray-900 text-gray-50 shadow-lg transition-all hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300",
+  {
     variants: {
-      variant: {
-        indigo: "bg-indigo-400",
-        yellow: "bg-yellow-400",
-        red: "bg-red-400",
+      expanded: {
+        true: "w-32",
+        false: "w-12",
       },
     },
-  });
+  },
+);
+
+const iconClasses = cva("size-6", {
+  variants: {
+    expanded: {
+      true: "mr-2",
+      false: "",
+    },
+  },
+});
+
+const spanClasses = cva("", {
+  variants: {
+    expanded: {
+      true: "",
+      false: "sr-only",
+    },
+  },
+});
+
+export function WorkoutDay() {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const handleScroll: React.UIEventHandler<HTMLDivElement> = (e) => {
+    const bottom =
+      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
+      e.currentTarget.clientHeight;
+    setIsExpanded(bottom);
+  };
 
   return (
-    <SimpleTooltip key={muscleGroup.id} title={muscleGroup.name}>
-      <div
-        className={cn(
-          "h-4 w-4 rounded-full",
-          muscleIndicatorVariants({
-            variant: muscleGroup.color,
-          }),
-        )}
-      />
-    </SimpleTooltip>
-  );
-}
-
-interface SetControlProps {
-  set: WorkoutSet;
-}
-
-function SetControl({ set }: SetControlProps) {
-  return (
-    <div className="flex items-center">
-      <Button onClick={() => {}} variant="outline" size="icon">
-        <Minus />
-      </Button>
-      <p className="flex-1 text-center">{set.reps}</p>
-      <Button variant="outline" size="icon">
-        <Plus />
-      </Button>
-    </div>
+    <>
+      <TypographyH2>Lunes</TypographyH2>
+      <ScrollArea onScroll={handleScroll} className="flex-1 overflow-hidden">
+        <div className="relative flex flex-col gap-2">
+          {chestAndTricepsWorkout.exercises.map((exercise) => {
+            return (
+              <ExerciseListItemView key={exercise.id} exercise={exercise} />
+            );
+          })}
+          <div className="sticky bottom-0 z-50 size-fit self-end py-2 px-1">
+            <Button className={cn(buttonClasses({ expanded: isExpanded }))}>
+              <PlusIcon className={cn(iconClasses({ expanded: isExpanded }))} />
+              <span className={cn(spanClasses({ expanded: isExpanded }))}>
+                Add
+              </span>
+            </Button>
+          </div>
+        </div>
+      </ScrollArea>
+    </>
   );
 }
