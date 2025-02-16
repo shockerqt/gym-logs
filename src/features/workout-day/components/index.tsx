@@ -9,6 +9,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Exercises } from "./exercises";
 import { AddExerciseButton } from "./add-exercise-button";
+import { AddExerciseDialog } from "./add-exercise-dialog";
 
 export function WorkoutDay() {
   const [api, setApi] = useState<CarouselApi>();
@@ -49,7 +50,9 @@ export function WorkoutDay() {
             ))}
           </CarouselContent>
         </Carousel>
-        <AddExerciseButton scrolledDown={scrolledDown} />
+        <AddExerciseDialog>
+          <AddExerciseButton scrolledDown={scrolledDown} />
+        </AddExerciseDialog>
       </div>
     </>
   );

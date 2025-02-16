@@ -5,15 +5,16 @@ import { PlusIcon } from "lucide-react";
 
 interface Props {
   scrolledDown: boolean;
+  onClick?: () => void;
 }
 
-export function AddExerciseButton({ scrolledDown }: Props) {
+export function AddExerciseButton({ scrolledDown, onClick }: Props) {
   const buttonClasses = cva(
-    "size-12 rounded-full bg-gray-900 text-gray-50 shadow-lg transition-all hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300",
+    "size-12 rounded-full bg-gray-900 text-gray-50 shadow-lg transition-all hover:bg-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50 dark:focus-visible:ring-gray-300",
     {
       variants: {
         expanded: {
-          true: "w-32",
+          true: "w-40",
           false: "w-12",
         },
       },
@@ -40,9 +41,14 @@ export function AddExerciseButton({ scrolledDown }: Props) {
 
   return (
     <div className="fixed  bottom-0 z-50 size-fit self-end py-3 px-4">
-      <Button className={cn(buttonClasses({ expanded: scrolledDown }))}>
+      <Button
+        onClick={onClick}
+        className={cn(buttonClasses({ expanded: scrolledDown }))}
+      >
         <PlusIcon className={cn(iconClasses({ expanded: scrolledDown }))} />
-        <span className={cn(spanClasses({ expanded: scrolledDown }))}>Add</span>
+        <span className={cn(spanClasses({ expanded: scrolledDown }))}>
+          Add exercise
+        </span>
       </Button>
     </div>
   );

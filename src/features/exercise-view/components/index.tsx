@@ -1,5 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+  CarouselApi,
+} from "@/components/ui/carousel";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { TypographyH1 } from "@/components/ui/typography";
@@ -64,8 +72,32 @@ interface ExerciseControls {
 }
 
 function ExerciseControls({ selectedExerciseId }: ExerciseControls) {
+  const [api, setApi] = useState<CarouselApi>();
+  const [api2, setApi2] = useState<CarouselApi>();
   const [weight, setWeight] = useState(0);
   const [reps, setReps] = useState(0);
+
+  useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    api.on("select", () => {
+      console.log("select");
+      console.log(api);
+    });
+  }, [api]);
+
+  useEffect(() => {
+    if (!api2) {
+      return;
+    }
+
+    api2.on("select", () => {
+      console.log("select");
+      console.log(api2.slidesInView());
+    });
+  }, [api2]);
 
   useEffect(() => {
     setWeight(0);
@@ -80,61 +112,79 @@ function ExerciseControls({ selectedExerciseId }: ExerciseControls) {
 
   return (
     <div className="my-8">
-      <div className="flex items-center justify-center space-x-2 mb-6">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8 shrink-0 rounded-full"
-          // onClick={() => onClick(-10)}
-          // disabled={goal <= 200}
+      <div className="px-24 mb-4">
+        <Carousel
+          setApi={setApi}
+          opts={{
+            align: "center",
+            startIndex: 0,
+            active: true,
+            skipSnaps: true,
+            // dragFree: true,
+            // containScroll: false,
+            // watchSlides: false,
+          }}
         >
-          <Minus />
-          <span className="sr-only">Decrease</span>
-        </Button>
-        <div className="flex-1 text-center">
-          <div className="text-7xl font-bold tracking-tighter">{reps}</div>
-          <div className="text-[0.70rem] uppercase text-muted-foreground">
+          <CarouselContent>
+            {Array.from({ length: 100 }).map((_, index) => (
+              <CarouselItem key={index}>
+                <div className="flex-1 text-center select-none">
+                  <div className="text-7xl font-bold tracking-tighter">
+                    {index}
+                  </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="text-[0.70rem] uppercase text-muted-foreground text-center select-none">
             Reps
           </div>
-        </div>
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8 shrink-0 rounded-full"
-          // onClick={() => onClick(10)}
-          // disabled={goal >= 400}
-        >
-          <Plus />
-          <span className="sr-only">Increase</span>
-        </Button>
+          <CarouselPrevious className="size-10" variant="secondary">
+            <Minus />
+            <span className="sr-only">Previous slide</span>
+          </CarouselPrevious>
+          <CarouselNext className="size-10" variant="secondary">
+            <Plus />
+            <span className="sr-only">Previous slide</span>
+          </CarouselNext>
+        </Carousel>
       </div>
-      <div className="flex items-center justify-center space-x-2 mb-6 px-16">
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8 shrink-0 rounded-full"
-          onClick={() => onChangeButtonClick("weight", -10)}
-          // disabled={goal <= 200}
+      <div className="px-32 mb-8">
+        <Carousel
+          setApi={setApi2}
+          opts={{
+            align: "center",
+            startIndex: 0,
+            active: true,
+            skipSnaps: true,
+            // dragFree: true,
+            // containScroll: false,
+            // watchSlides: false,
+          }}
         >
-          <Minus />
-          <span className="sr-only">Decrease</span>
-        </Button>
-        <div className="flex-1 text-center">
-          <div className="text-5xl font-bold tracking-tighter">{weight}</div>
-          <div className="text-[0.70rem] uppercase text-muted-foreground">
+          <CarouselContent>
+            {Array.from({ length: 10 }).map((_, index) => (
+              <CarouselItem key={index}>
+                <div className="flex-1 text-center select-none">
+                  <div className="text-5xl font-bold tracking-tighter">
+                    {index}
+                  </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="text-[0.70rem] uppercase text-muted-foreground text-center select-none">
             Kgs
           </div>
-        </div>
-        <Button
-          variant="outline"
-          size="icon"
-          className="h-8 w-8 shrink-0 rounded-full"
-          onClick={() => onChangeButtonClick("weight", +10)}
-          // disabled={goal >= 400}
-        >
-          <Plus />
-          <span className="sr-only">Increase</span>
-        </Button>
+          <CarouselPrevious className="size-8" variant="secondary">
+            <Minus />
+            <span className="sr-only">Previous slide</span>
+          </CarouselPrevious>
+          <CarouselNext className="size-8" variant="secondary">
+            <Plus />
+            <span className="sr-only">Previous slide</span>
+          </CarouselNext>
+        </Carousel>
       </div>
       <div className="grid grid-flow-col gap-2">
         <Button>Save</Button>
