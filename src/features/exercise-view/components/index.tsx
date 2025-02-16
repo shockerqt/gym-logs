@@ -80,38 +80,32 @@ function ExerciseControls({ selectedExerciseId }: ExerciseControls) {
 
   return (
     <div className="my-8">
-      <div className="flex items-center my-8">
+      <div className="flex items-center justify-center space-x-2 mb-6">
         <Button
-          onClick={onChangeButtonClick("weight", -1)}
           variant="outline"
           size="icon"
+          className="h-8 w-8 shrink-0 rounded-full"
+          // onClick={() => onClick(-10)}
+          // disabled={goal <= 200}
         >
           <Minus />
+          <span className="sr-only">Decrease</span>
         </Button>
-        <p className="flex-1 text-center">{weight}</p>
+        <div className="flex-1 text-center">
+          <div className="text-7xl font-bold tracking-tighter">{112}</div>
+          <div className="text-[0.70rem] uppercase text-muted-foreground">
+            Reps
+          </div>
+        </div>
         <Button
-          onClick={onChangeButtonClick("weight", 1)}
           variant="outline"
           size="icon"
+          className="h-8 w-8 shrink-0 rounded-full"
+          // onClick={() => onClick(10)}
+          // disabled={goal >= 400}
         >
           <Plus />
-        </Button>
-      </div>
-      <div className="flex items-center my-8">
-        <Button
-          onClick={onChangeButtonClick("reps", -1)}
-          variant="outline"
-          size="icon"
-        >
-          <Minus />
-        </Button>
-        <p className="flex-1 text-center">{reps}</p>
-        <Button
-          onClick={onChangeButtonClick("reps", 1)}
-          variant="outline"
-          size="icon"
-        >
-          <Plus />
+          <span className="sr-only">Increase</span>
         </Button>
       </div>
       <div className="grid grid-flow-col gap-2">

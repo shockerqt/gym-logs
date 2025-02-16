@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { TypographyH2 } from "@/components/ui/typography";
-import { PlusIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { chestAndTricepsWorkout } from "../utils/data";
 import { ExerciseListItemView } from "./exercise-item-view";
@@ -43,15 +43,27 @@ export function WorkoutDay() {
 
   const handleScroll: React.UIEventHandler<HTMLDivElement> = (e) => {
     const bottom =
-      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
-      e.currentTarget.clientHeight;
+      e.currentTarget.scrollHeight - e.currentTarget.scrollTop <=
+      e.currentTarget.clientHeight + 4;
     setIsExpanded(bottom);
   };
 
   return (
     <>
-      <TypographyH2>Lunes</TypographyH2>
-      <ScrollArea onScroll={handleScroll} className="flex-1 overflow-hidden">
+      <div className="grid grid-cols-3 px-2 mb-4 items-center">
+        <Button className="justify-self-start" size="icon" variant="ghost">
+          <ChevronLeft className="size-5 stroke-2" />
+        </Button>
+        <Button variant="ghost">Hoy</Button>
+        {/* <TypographyH2 className="justify-self-center">Hoy</TypographyH2> */}
+        <Button className="justify-self-end" size="icon" variant="ghost">
+          <ChevronRight className="size-5 stroke-2" />
+        </Button>
+      </div>
+      <ScrollArea
+        onScroll={handleScroll}
+        className="flex-1 overflow-hidden px-1"
+      >
         <div className="relative flex flex-col gap-2">
           {chestAndTricepsWorkout.exercises.map((exercise) => {
             return (

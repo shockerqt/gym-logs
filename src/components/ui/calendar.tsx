@@ -14,26 +14,29 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      useAdditionalWeekYearTokens
+      fixedWeeks
+      // hideNavigation
       className={cn("p-3", className)}
       classNames={{
-        months: "flex flex-col sm:flex-row gap-2",
+        months: "relative",
         month: "flex flex-col gap-4",
         month_caption: "flex justify-center pt-1 relative items-center w-full",
         caption_label: "text-sm font-medium",
-        nav: "flex items-center gap-1",
+        nav: "flex items-center gap-1 absolute right-0 left-0 justify-between",
         button_previous: cn(
           buttonVariants({ variant: "outline" }),
-          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100",
+          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100 z-50",
         ),
         button_next: cn(
           buttonVariants({ variant: "outline" }),
-          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100",
+          "size-7 bg-transparent p-0 opacity-50 hover:opacity-100 z-50",
         ),
         month_grid: "w-full border-collapse space-x-1",
-        weekdays: "flex",
+        weekdays: "flex justify-around",
         weekday:
           "text-muted-foreground rounded-md w-8 font-normal text-[0.8rem]",
-        week: "flex w-full mt-2",
+        week: "flex w-full mt-2 gap-2 justify-around",
         day_button: cn(
           "relative p-0 text-center text-sm focus-within:relative focus-within:z-20 [&:has([aria-selected])]:bg-accent [&:has([aria-selected].day-outside)]:bg-accent/50 [&:has([aria-selected].day-range-end)]:rounded-r-md",
           props.mode === "range"
@@ -58,12 +61,25 @@ function Calendar({
         ...classNames,
       }}
       components={{
-        Chevron: ({ className, orientation, ...props }) =>
-          orientation === "left" ? (
-            <ChevronLeft className={cn("size-4", className)} {...props} />
-          ) : (
+        // MonthCaption(props) {
+        //   const { calendarMonth, displayIndex, ...divProps } = props;
+        //   return (
+        //     <div>
+        //       <ChevronLeft className={cn("size-4", className)} {...props} />
+        //       <div {...divProps} />
+        //     </div>
+        //   );
+        // },
+        Chevron({ className, orientation, ...props }) {
+          if (orientation === "left")
+            return (
+              <ChevronLeft className={cn("size-4", className)} {...props} />
+            );
+
+          return (
             <ChevronRight className={cn("size-4", className)} {...props} />
-          ),
+          );
+        },
       }}
       {...props}
     />

@@ -9,8 +9,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { TypographyH1 } from "@/components/ui/typography";
-import { ChevronDown, EllipsisVertical } from "lucide-react";
+import { Calendar, ChevronDown, EllipsisVertical } from "lucide-react";
 import { type PropsWithChildren } from "react";
+import { CalendarDrawer } from "./calendar";
 
 export function Layout({ children }: PropsWithChildren) {
   return (
@@ -19,14 +20,19 @@ export function Layout({ children }: PropsWithChildren) {
         <div className="flex gap-2 items-center">
           <TypographyH1>Gym Logs</TypographyH1>
           <Button className="rounded-full bg-secondary size-8" variant="ghost">
-            <ChevronDown className="stroke-3 size-4 pt-[1px]" />
+            <ChevronDown className="stroke-2 size-4 pt-[1px]" />
           </Button>
         </div>
         <nav className="flex gap-4 items-center">
+          <CalendarDrawer>
+            <Button className="rounded-full" size="icon" variant="ghost">
+              <Calendar className="stroke-2 size-5" />
+            </Button>
+          </CalendarDrawer>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="rounded-full" size="icon" variant="ghost">
-                <EllipsisVertical className="stroke-3 size-5" />
+                <EllipsisVertical className="stroke-2 size-5" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -46,8 +52,8 @@ export function Layout({ children }: PropsWithChildren) {
                 variant="ghost"
               >
                 <Avatar className="size-10">
-                  <AvatarImage src="https://github.com/shadcn.png" />
-                  <AvatarFallback>CN</AvatarFallback>
+                  <AvatarImage src="" />
+                  <AvatarFallback>NA</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
