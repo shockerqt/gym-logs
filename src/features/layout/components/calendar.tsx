@@ -12,12 +12,6 @@ import {
 import * as React from "react";
 
 export function CalendarDrawer({ children }: React.PropsWithChildren) {
-  const [goal, setGoal] = React.useState(350);
-
-  function onClick(adjustment: number) {
-    setGoal(Math.max(200, Math.min(400, goal + adjustment)));
-  }
-
   return (
     <Drawer>
       <DrawerTrigger asChild>{children}</DrawerTrigger>

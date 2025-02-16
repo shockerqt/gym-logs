@@ -9,10 +9,10 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
-import { Exercise, ExerciseSet, MuscleGroup } from "../utils/data";
-import { MessageSquareText } from "lucide-react";
-import { Link } from "react-router";
+import { Flame, MessageCircleMore, TrophyIcon } from "lucide-react";
 import { Fragment } from "react";
+import { Link } from "react-router";
+import { Exercise, ExerciseSet, MuscleGroup } from "../utils/data";
 
 interface Props {
   exercise: Exercise;
@@ -40,7 +40,7 @@ export function ExerciseListItemView({ exercise }: Props) {
           {exercise.sets.map((set, index, { length }) => {
             return (
               <Fragment key={set.id}>
-                <ExerciseSetView exerciseSet={set} index={index} />
+                <ExerciseSetView exerciseSet={set} />
                 {index < length - 1 && <Separator className="my-2" />}
               </Fragment>
             );
@@ -81,16 +81,23 @@ function MuscleGroupIndicator({ muscleGroup }: MuscleGroupIndicatorProps) {
 }
 
 interface ExerciseSetProps {
-  index: number;
   exerciseSet: ExerciseSet;
 }
 
-function ExerciseSetView({ index, exerciseSet }: ExerciseSetProps) {
+function ExerciseSetView({ exerciseSet }: ExerciseSetProps) {
   return (
-    <div className="flex items-center">
-      <p>{index + 1}.</p>
-      <p className="flex-1 text-center">{exerciseSet.reps}</p>
-      <MessageSquareText />
+    <div className="grid grid-cols-[1fr_1fr_100px] items-center justify-items-start">
+      <p>
+        <b>60</b> kg
+      </p>
+      <p className="flex-1 text-center">
+        <b>{exerciseSet.reps}</b> reps
+      </p>
+      <div className="justify-self-end flex items-center gap-4">
+        <Flame className="size-5 stroke-orange-600" />
+        <TrophyIcon className="size-5 stroke-amber-400" />
+        <MessageCircleMore className="size-5" />
+      </div>
     </div>
   );
 }

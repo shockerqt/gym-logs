@@ -92,7 +92,7 @@ function ExerciseControls({ selectedExerciseId }: ExerciseControls) {
           <span className="sr-only">Decrease</span>
         </Button>
         <div className="flex-1 text-center">
-          <div className="text-7xl font-bold tracking-tighter">{112}</div>
+          <div className="text-7xl font-bold tracking-tighter">{reps}</div>
           <div className="text-[0.70rem] uppercase text-muted-foreground">
             Reps
           </div>
@@ -102,6 +102,34 @@ function ExerciseControls({ selectedExerciseId }: ExerciseControls) {
           size="icon"
           className="h-8 w-8 shrink-0 rounded-full"
           // onClick={() => onClick(10)}
+          // disabled={goal >= 400}
+        >
+          <Plus />
+          <span className="sr-only">Increase</span>
+        </Button>
+      </div>
+      <div className="flex items-center justify-center space-x-2 mb-6 px-16">
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8 shrink-0 rounded-full"
+          onClick={() => onChangeButtonClick("weight", -10)}
+          // disabled={goal <= 200}
+        >
+          <Minus />
+          <span className="sr-only">Decrease</span>
+        </Button>
+        <div className="flex-1 text-center">
+          <div className="text-5xl font-bold tracking-tighter">{weight}</div>
+          <div className="text-[0.70rem] uppercase text-muted-foreground">
+            Kgs
+          </div>
+        </div>
+        <Button
+          variant="outline"
+          size="icon"
+          className="h-8 w-8 shrink-0 rounded-full"
+          onClick={() => onChangeButtonClick("weight", +10)}
           // disabled={goal >= 400}
         >
           <Plus />

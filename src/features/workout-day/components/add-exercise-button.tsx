@@ -1,9 +1,13 @@
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 import { PlusIcon } from "lucide-react";
-import { Button } from "react-day-picker";
 
-function AddExerciseButton() {
+interface Props {
+  scrolledDown: boolean;
+}
+
+export function AddExerciseButton({ scrolledDown }: Props) {
   const buttonClasses = cva(
     "size-12 rounded-full bg-gray-900 text-gray-50 shadow-lg transition-all hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300",
     {
@@ -35,10 +39,10 @@ function AddExerciseButton() {
   });
 
   return (
-    <div className="sticky bottom-0 z-50 size-fit self-end py-2 px-1">
-      <Button className={cn(buttonClasses({ expanded: isExpanded }))}>
-        <PlusIcon className={cn(iconClasses({ expanded: isExpanded }))} />
-        <span className={cn(spanClasses({ expanded: isExpanded }))}>Add</span>
+    <div className="fixed  bottom-0 z-50 size-fit self-end py-3 px-4">
+      <Button className={cn(buttonClasses({ expanded: scrolledDown }))}>
+        <PlusIcon className={cn(iconClasses({ expanded: scrolledDown }))} />
+        <span className={cn(spanClasses({ expanded: scrolledDown }))}>Add</span>
       </Button>
     </div>
   );

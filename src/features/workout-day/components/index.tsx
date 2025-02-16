@@ -8,9 +8,11 @@ import {
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Exercises } from "./exercises";
+import { AddExerciseButton } from "./add-exercise-button";
 
 export function WorkoutDay() {
   const [api, setApi] = useState<CarouselApi>();
+  const [scrolledDown, setScrolledDown] = useState(false);
 
   useEffect(() => {
     if (!api) {
@@ -18,7 +20,8 @@ export function WorkoutDay() {
     }
 
     api.on("select", () => {
-      // Do something on select.
+      console.log("select");
+      console.log(api);
     });
   }, [api]);
 
@@ -33,15 +36,21 @@ export function WorkoutDay() {
           <ChevronRight className="size-5 stroke-2" />
         </Button>
       </div>
-      <Carousel className="h-[calc(100%-36px)]">
-        <CarouselContent className="h-full">
-          {[0, 1, 2].map((_, index) => (
-            <CarouselItem key={index}>
-              <Exercises currentDate={index} />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+      <div className="h-[calc(100%-36px)] relative flex flex-col">
+        <Carousel setApi={setApi} className="h-full">
+          <CarouselContent className="h-full">
+            {[0, 1, 2].map((_, index) => (
+              <CarouselItem key={index}>
+                <Exercises
+                  currentDate={index}
+                  setScrolledDown={setScrolledDown}
+                />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+        <AddExerciseButton scrolledDown={scrolledDown} />
+      </div>
     </>
   );
 }
