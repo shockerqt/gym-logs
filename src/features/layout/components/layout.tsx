@@ -68,9 +68,7 @@ export function Layout({ children }: PropsWithChildren) {
           </DropdownMenu>
         </nav>
       </header>
-      <main className="flex-1 max-h-[calc(100dvh-64px)] flex flex-col">
-        {children}
-      </main>
+      <main className="flex-1 max-h-[calc(100dvh-64px)]">{children}</main>
     </div>
   );
 }

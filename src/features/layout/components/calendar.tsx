@@ -1,20 +1,15 @@
 "use client";
 
-import * as React from "react";
-import { Minus, Plus } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Drawer,
-  DrawerClose,
   DrawerContent,
   DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer";
-import { Calendar } from "@/components/ui/calendar";
+import * as React from "react";
 
 export function CalendarDrawer({ children }: React.PropsWithChildren) {
   const [goal, setGoal] = React.useState(350);

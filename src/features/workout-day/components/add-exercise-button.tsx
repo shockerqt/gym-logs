@@ -1,0 +1,45 @@
+import { cn } from "@/lib/utils";
+import { cva } from "class-variance-authority";
+import { PlusIcon } from "lucide-react";
+import { Button } from "react-day-picker";
+
+function AddExerciseButton() {
+  const buttonClasses = cva(
+    "size-12 rounded-full bg-gray-900 text-gray-50 shadow-lg transition-all hover:bg-gray-900/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 dark:bg-gray-50 dark:text-gray-900 dark:hover:bg-gray-50/90 dark:focus-visible:ring-gray-300",
+    {
+      variants: {
+        expanded: {
+          true: "w-32",
+          false: "w-12",
+        },
+      },
+    },
+  );
+
+  const iconClasses = cva("size-6", {
+    variants: {
+      expanded: {
+        true: "mr-2",
+        false: "",
+      },
+    },
+  });
+
+  const spanClasses = cva("", {
+    variants: {
+      expanded: {
+        true: "",
+        false: "sr-only",
+      },
+    },
+  });
+
+  return (
+    <div className="sticky bottom-0 z-50 size-fit self-end py-2 px-1">
+      <Button className={cn(buttonClasses({ expanded: isExpanded }))}>
+        <PlusIcon className={cn(iconClasses({ expanded: isExpanded }))} />
+        <span className={cn(spanClasses({ expanded: isExpanded }))}>Add</span>
+      </Button>
+    </div>
+  );
+}
