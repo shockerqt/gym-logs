@@ -78,37 +78,37 @@ function ExerciseControls({ selectedExerciseId }: ExerciseControls) {
   const [reps, setReps] = useState(0);
 
   useEffect(() => {
-    if (!api) {
-      return;
-    }
+    if (!api) return;
 
     api.on("select", () => {
       console.log("select");
       console.log(api);
+      console.log(reps);
     });
-  }, [api]);
+  }, [api, reps]);
 
   useEffect(() => {
-    if (!api2) {
-      return;
-    }
+    if (!api2) return;
 
-    api2.on("select", () => {
+    api2.on("select", (a) => {
       console.log("select");
-      console.log(api2.slidesInView());
+      console.log("A", a);
+      console.log(api2.selectedScrollSnap());
+      setWeight(api2.selectedScrollSnap());
+      console.log(weight);
     });
-  }, [api2]);
+  }, [api2, weight]);
 
   useEffect(() => {
     setWeight(0);
     setReps(0);
   }, [selectedExerciseId]);
 
-  const onChangeButtonClick =
-    (selector: "weight" | "reps", delta: number) => () => {
-      const set = selector === "weight" ? setWeight : setReps;
-      set((count) => Math.min(count + delta));
-    };
+  // const onChangeButtonClick =
+  //   (selector: "weight" | "reps", delta: number) => () => {
+  //     const set = selector === "weight" ? setWeight : setReps;
+  //     set((count) => Math.min(count + delta));
+  //   };
 
   return (
     <div className="my-8">
@@ -116,6 +116,11 @@ function ExerciseControls({ selectedExerciseId }: ExerciseControls) {
         <Carousel
           setApi={setApi}
           opts={{
+            watchFocus(emblaApi, evt) {
+              console.log("APIEBMLA", emblaApi);
+              console.log("AVE", evt);
+            },
+
             align: "center",
             startIndex: 0,
             active: true,

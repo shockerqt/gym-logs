@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -6,14 +7,21 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { Exercises } from "./exercises";
 import { AddExerciseButton } from "./add-exercise-button";
 import { AddExerciseDialog } from "./add-exercise-dialog";
+import { Exercise } from "@/controllers/add-exercise";
 
-export function WorkoutDay() {
+interface Props {
+  exercisesPromise: Promise<Exercise[]>;
+}
+
+export function WorkoutDay({ exercisesPromise }: Props) {
   const [api, setApi] = useState<CarouselApi>();
   const [scrolledDown, setScrolledDown] = useState(false);
+  const exercises = use(exercisesPromise);
+  console.log(exercises);
 
   useEffect(() => {
     if (!api) {
