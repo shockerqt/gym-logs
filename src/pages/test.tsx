@@ -1,17 +1,19 @@
 import { useRef, useState } from "react";
 
-const TIME = 1000;
+const TIME = 300;
 
 const GymLog = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const x = useRef(0); // Almacena la posición inicial del toque
   const translateX = useRef(0); // Almacena el valor actual de translateX
+  const activeItemX = useRef(0);
   const velocity = useRef(0); // Almacena la velocidad del gesto
   const [days, setDays] = useState([...Array(5)].map((_, i) => i));
 
   // Función para calcular la posición más cercana para el snapping
   const getNearestSnapPosition = (
+    lastTranslateX: number,
     currentTranslateX: number,
     velocity: number,
   ) => {
@@ -21,6 +23,7 @@ const GymLog = () => {
     const totalItems = contentRef.current.children.length;
 
     // Calculamos el ítem actual basado en la posición
+    const lastItem = Math.round(lastTranslateX / itemWidth);
     const currentItem = Math.round(currentTranslateX / itemWidth);
 
     // Determinamos si avanzar o retroceder un ítem basado en la velocidad
@@ -30,6 +33,11 @@ const GymLog = () => {
       targetItem = currentItem - 1;
     } else if (velocity < -10) {
       targetItem = currentItem + 1;
+    }
+
+    // Verificamos que la diferencia entre targetItem y lastItem no sea mayor a 1
+    if (Math.abs(targetItem - lastItem) > 1) {
+      targetItem = lastItem + Math.sign(targetItem - lastItem);
     }
 
     // Aseguramos que no nos salgamos de los límites
@@ -44,15 +52,15 @@ const GymLog = () => {
 
   const handleTouchStart: React.TouchEventHandler<HTMLDivElement> = (event) => {
     if (contentRef.current) {
-      // contentRef.current.style.transition = "none";
-      const match = contentRef.current.style.transform.match(
-        /translateX\((-?\d+)px\)/,
-      );
+      // Usamos getComputedStyle para obtener la posición de la transición en curso
+      const transform = window.getComputedStyle(contentRef.current).transform;
+      const match = transform.match(/matrix\((.+?)\)/);
 
       if (match) {
-        const valueInPixels = parseInt(match[1], 10);
-        console.log("CURRENT", valueInPixels);
-        translateX.current = valueInPixels;
+        // Si la transformación es una matriz, extraemos la posición de translateX
+        const values = match[1].split(", ");
+        translateX.current = parseFloat(values[4]); // translateX se encuentra en la columna 4
+        console.log("CURRENT", translateX.current);
       }
     }
     const touch = event.touches[0];
@@ -81,9 +89,11 @@ const GymLog = () => {
 
     // Calculamos la posición de snapping basada en la velocidad
     const targetPosition = getNearestSnapPosition(
+      activeItemX.current,
       translateX.current,
       velocity.current,
     );
+    activeItemX.current = targetPosition;
 
     // Aplicamos la animación de snapping
     contentRef.current.style.transition = `transform ${TIME}ms ease-out`;
