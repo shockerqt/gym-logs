@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { addExercise } from "@/controllers/add-exercise";
 import { FormEventHandler, useState } from "react";
 // import { useFormStatus } from "react-dom";
 

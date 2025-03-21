@@ -8,20 +8,37 @@ import {
 } from "@/components/ui/carousel";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { use, useEffect, useState } from "react";
-import { Exercises } from "./exercises";
 import { AddExerciseButton } from "./add-exercise-button";
 import { AddExerciseDialog } from "./add-exercise-dialog";
-import { Exercise } from "@/controllers/add-exercise";
+import { Exercises } from "./exercises";
+import { getWorkoutDay } from "@/controllers/add-exercise";
+import {
+  formatYearMonth,
+  FormatYearMonth,
+  GetWorkoutDayOutput,
+} from "@/controllers/workoutDayTypes";
 
 interface Props {
-  exercisesPromise: Promise<Exercise[]>;
+  getWorkoutDayPromise: Promise<GetWorkoutDayOutput>;
 }
 
-export function WorkoutDay({ exercisesPromise }: Props) {
+const initialDays = [
+  formatYearMonth(new Date(Date.now() - 24 * 60 * 60 * 1000)),
+  formatYearMonth(new Date()),
+  formatYearMonth(new Date(Date.now() + 24 * 60 * 60 * 1000)),
+];
+
+const getDay = (date: Date) => {};
+
+export function WorkoutDay(props: Props) {
   const [api, setApi] = useState<CarouselApi>();
   const [scrolledDown, setScrolledDown] = useState(false);
-  const exercises = use(exercisesPromise);
-  console.log(exercises);
+  const [days, setDays] = useState<Array<FormatYearMonth>>(initialDays);
+
+  const getWorkout = async () => {
+    console.log(await props.getWorkoutDayPromise);
+  };
+  // const workoutDay = use(props.getWorkoutDayPromise);
 
   useEffect(() => {
     if (!api) {
@@ -29,8 +46,18 @@ export function WorkoutDay({ exercisesPromise }: Props) {
     }
 
     api.on("select", () => {
-      console.log("select");
-      console.log(api);
+      if (!api.canScrollPrev()) {
+        console.log("select");
+        console.log(api);
+        setDays((days) => {
+          const firstDay = days[0];
+          const beforeFirstDay = formatYearMonth(
+            new Date(new Date(firstDay).getTime() - 24 * 60 * 60 * 1000),
+          );
+          const newDays = [...days, beforeFirstDay];
+          return newDays;
+        });
+      }
     });
   }, [api]);
 
@@ -48,14 +75,16 @@ export function WorkoutDay({ exercisesPromise }: Props) {
       <div className="h-[calc(100%-36px)] relative flex flex-col">
         <Carousel setApi={setApi} className="h-full">
           <CarouselContent className="h-full">
-            {[0, 1, 2].map((_, index) => (
-              <CarouselItem key={index}>
-                <Exercises
-                  currentDate={index}
-                  setScrolledDown={setScrolledDown}
-                />
-              </CarouselItem>
-            ))}
+            {days
+              .sort((b, a) => new Date(b).getTime() - new Date(a).getTime())
+              .map((day) => (
+                <CarouselItem key={day}>
+                  <Exercises
+                    currentDate={new Date(day).getTime()}
+                    setScrolledDown={setScrolledDown}
+                  />
+                </CarouselItem>
+              ))}
           </CarouselContent>
         </Carousel>
         <AddExerciseDialog>

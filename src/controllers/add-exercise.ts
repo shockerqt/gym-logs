@@ -1,106 +1,154 @@
+import {
+  AddWorkoutDayInput,
+  AddWorkoutDayOutput,
+  GetWorkoutDayInput,
+  GetWorkoutDayOutput,
+  WorkoutDay,
+} from "./workoutDayTypes";
+import {
+  AddWorkoutExerciseInput,
+  AddWorkoutExerciseOutput,
+} from "./workoutExerciseTypes";
+import {
+  AddWorkoutSetInput,
+  AddWorkoutSetOutput,
+  RemoveWorkoutSetInput,
+  UpdateWorkoutSetInput,
+} from "./workoutSetTypes";
+
 const DB_NAME = "WorkoutDB";
 const DB_VERSION = 1;
 
-export const openDB = (): Promise<IDBDatabase> => {
+let db: IDBDatabase;
+
+function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onupgradeneeded = (event) => {
-      if (!event.target || !("result" in event.target)) {
-        console.error("Result doesnt exist");
-        return;
-      }
-      const db = event.target.result as IDBDatabase;
-      if (!db.objectStoreNames.contains("workouts")) {
-        const workoutStore = db.createObjectStore("workouts", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-        workoutStore.createIndex("date", "date", { unique: false });
-      }
-      if (!db.objectStoreNames.contains("exercises")) {
-        const exerciseStore = db.createObjectStore("exercises", {
-          keyPath: "id",
-          autoIncrement: true,
-        });
-        exerciseStore.createIndex("workoutId", "workoutId", { unique: false });
-      }
+      const db = (event.target as IDBOpenDBRequest).result;
+      db.createObjectStore("workoutDays", {
+        keyPath: "date",
+      });
+      db.createObjectStore("workoutExercises", {
+        keyPath: "id",
+        autoIncrement: true,
+      });
+      db.createObjectStore("workoutSets", {
+        keyPath: "id",
+        autoIncrement: true,
+      });
+      db.createObjectStore("exercises", { keyPath: "id", autoIncrement: true });
     };
 
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
-};
+    request.onsuccess = () => {
+      db = request.result;
+      resolve(db);
+    };
 
-export async function addWorkout(date: Date) {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction("workouts", "readwrite");
-    const store = tx.objectStore("workouts");
-
-    const request = store.add({ date, exercises: [] });
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onerror = () => {
+      reject(request.error);
+    };
   });
 }
 
-type Weight = {
-  value: number;
-  unit: string;
-};
-
-type WorkoutSet = {
-  id: number;
-  reps: number;
-  weight: Weight;
-  notes?: string;
-};
-
-export type Exercise = {
-  id: number;
-  name: string;
-  muscleGroups: MuscleGroup[];
-  sets: WorkoutSet[];
-};
-
-export type MuscleGroup = {
-  id: number;
-  name: string;
-  color: "indigo" | "red" | "yellow";
-};
-
-export async function addExercise(
-  workoutId: number,
-  name: string,
-  reps: number,
-  sets: WorkoutSet[] = [],
-) {
+async function performTransaction<T>(
+  storeName: string,
+  mode: IDBTransactionMode,
+  operation: (store: IDBObjectStore) => IDBRequest,
+): Promise<T> {
   const db = await openDB();
   return new Promise((resolve, reject) => {
-    const tx = db.transaction("exercises", "readwrite");
-    const store = tx.objectStore("exercises");
+    const transaction = db.transaction(storeName, mode);
+    const store = transaction.objectStore(storeName);
+    const request = operation(store);
 
-    const request = store.add({ workoutId, name, sets, reps });
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
+    request.onsuccess = () => {
+      resolve(request.result as T);
+    };
+
+    request.onerror = () => {
+      reject(request.error);
+    };
   });
 }
 
-export async function getExercises(workoutId?: number): Promise<Exercise[]> {
-  const db = await openDB();
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction("exercises", "readonly");
-    const store = tx.objectStore("exercises");
-
-    let request: IDBRequest;
-    if (workoutId !== undefined) {
-      const index = store.index("workoutId");
-      request = index.getAll(workoutId);
-    } else {
-      request = store.getAll();
-    }
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
+async function addWorkoutDay(
+  input: AddWorkoutDayInput,
+): Promise<AddWorkoutDayOutput> {
+  const result = await performTransaction<number>(
+    "workoutDays",
+    "readwrite",
+    (store) => store.add(input),
+  );
+  return {
+    id: result,
+  };
 }
+
+async function getWorkoutDay(
+  input: GetWorkoutDayInput,
+): Promise<GetWorkoutDayOutput> {
+  try {
+    await addWorkoutDay({ date: input.date });
+  } catch {
+    // do nothing
+  }
+  const result = await performTransaction<WorkoutDay>(
+    "workoutDays",
+    "readonly",
+    (store) => {
+      const index = store.index("date");
+      return index.get(input.date);
+    },
+  );
+  return result;
+}
+
+export async function addWorkoutExercise(
+  input: AddWorkoutExerciseInput,
+): Promise<AddWorkoutExerciseOutput> {
+  const result = await performTransaction<AddWorkoutSetOutput>(
+    "workoutExercises",
+    "readonly",
+    (store) => store.add(input),
+  );
+  return result;
+}
+
+async function addWorkoutSet(
+  input: AddWorkoutSetInput,
+): Promise<AddWorkoutSetPayload> {
+  const result = await performTransaction<number>(
+    "workoutSets",
+    "readwrite",
+    (store) => store.add(input),
+  );
+  return { addedSetId: result };
+}
+
+async function updateWorkoutSet(
+  input: UpdateWorkoutSetInput,
+): Promise<UpdateWorkoutSetPayload> {
+  await performTransaction<void>("workoutSets", "readwrite", (store) =>
+    store.put(input),
+  );
+  return { updatedSetId: input.id };
+}
+
+async function removeWorkoutSet(
+  input: RemoveWorkoutSetInput,
+): Promise<RemoveWorkoutSetPayload> {
+  await performTransaction<void>("workoutSets", "readwrite", (store) =>
+    store.delete(input.id),
+  );
+  return { removedSetId: input.id };
+}
+
+export {
+  addWorkoutDay,
+  addWorkoutSet,
+  getWorkoutDay,
+  removeWorkoutSet,
+  updateWorkoutSet,
+};

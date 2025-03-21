@@ -1,14 +1,17 @@
-import { getExercises } from "@/controllers/add-exercise";
+import { getWorkoutDay } from "@/controllers/add-exercise";
+import { formatYearMonth } from "@/controllers/workoutDayTypes";
 import { Layout } from "@/features/layout";
 import { WorkoutDay } from "@/features/workout-day";
 import { Suspense } from "react";
 
+const date = formatYearMonth(new Date());
+
 export default function Page() {
-  const exercisesPromise = getExercises();
+  const workoutDayPromise = getWorkoutDay({ date });
   return (
     <Layout>
       <Suspense>
-        <WorkoutDay exercisesPromise={exercisesPromise} />
+        <WorkoutDay getWorkoutDayPromise={workoutDayPromise} />
       </Suspense>
     </Layout>
   );
